@@ -1,14 +1,5 @@
-
-  import React, { useState } from 'react';
-import './App.css'
-    
-
-function App() {
-
-
-  return (
-    <>
-
+import React, { useState } from 'react';
+import './App.css';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -444,8 +435,3 @@ function App() {
 
 export default App;
 
-    </>
-  )
-}
-
-export default App
