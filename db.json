@@ -1,0 +1,44 @@
+{
+    "posts": [
+      {
+        "id": "1",
+        "title": "Profile impression",
+        "sub-title": 12347,
+        "nifty": 12.39
+      },
+      {
+        "id": "2",
+        "title": "Profile views",
+        "sub-title": 1884,
+        "nifty": 43.333
+      },
+      {
+        "id": "3",
+        "title": "Add click",
+        "sub-title": 574,
+        "nifty": 38.93
+      },
+      {
+        "id": "4",
+        "title": "Visit website",
+        "sub-title": 269,
+        "nifty": 34.28
+      }
+    ],
+    "comments": [
+      {
+        "id": "1",
+        "text": "A comment about post 1",
+        "postId": "1"
+      },
+      {
+        "id": "2",
+        "text": "Another comment about post 1",
+        "postId": "1"
+      }
+    ],
+    "profile": {
+      "name": "typicode"
+    }
+  }
+  
