@@ -2,6 +2,7 @@
 import { Bars3Icon, BellIcon } from "@heroicons/react/24/outline";
 import { ChevronDownIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { Link } from "react-router-dom";
 
 export default function Navbar({ setSidebarOpen, userNavigation }) {
   return (
@@ -62,12 +63,12 @@ export default function Navbar({ setSidebarOpen, userNavigation }) {
             >
               {userNavigation.map((item) => (
                 <MenuItem key={item.name}>
-                  <a
-                    href={item.href}
+                  <Link
+                    to={item.href}
                     className="block px-3 py-1 text-sm/6 text-gray-900 data-[focus]:bg-gray-50 data-[focus]:outline-none"
                   >
                     {item.name}
-                  </a>
+                  </Link>
                 </MenuItem>
               ))}
             </MenuItems>
