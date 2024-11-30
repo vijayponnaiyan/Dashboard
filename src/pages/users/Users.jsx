@@ -1,7 +1,5 @@
-import React from 'react';
-import UserInfo from '../pages/UserInfo';
-
-
+import React from "react";
+import UserInfo from "./components/UserInfo";
 
 export default function Users() {
   return (
@@ -11,9 +9,7 @@ export default function Users() {
           {/* Heading Section */}
           <div className="mb-4 md:mb-0">
             <h2 className="text-xl md:text-3xl font-semibold">Team Members</h2>
-            <p className="mt-2 text-sm md:text-base">
-              Manage your team members and their account permissions here.
-            </p>
+            <p className="mt-2 text-sm md:text-base">Manage your team members and their account permissions here.</p>
           </div>
 
           {/* Button Section */}
@@ -31,11 +27,10 @@ export default function Users() {
         <div className="p-3">
           <hr />
         </div>
-          <div>
-            <UserInfo/>
-          </div>
+        <div>
+          <UserInfo />
+        </div>
       </div>
-
     </>
-  )
+  );
 }
