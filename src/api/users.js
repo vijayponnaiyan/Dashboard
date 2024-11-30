@@ -5,6 +5,6 @@ export const fetchUsers = async () => {
     const data = await baseAPI.get("/users");
     return data;
   } catch (error) {
-    console.error("Error fetching data:", error);
+    throw error;
   }
 };
