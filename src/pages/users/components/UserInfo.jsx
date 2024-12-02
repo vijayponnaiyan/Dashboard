@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { fetchUsers } from "../../../api/users";
 import Loader from "../../../components/ui/Loader";
+import EditIcon from "../../../assets/EditIcon";
+import DeleteIcon from "../../../assets/DeleteIcon";
 import EmptyState from "../../../components/ui/EmptyState";
-import UserBodytable from "../../users/components/UserBodytable";
-
 
 export default function UserInfo() {
   const [list, setList] = useState([]);
@@ -15,8 +15,7 @@ export default function UserInfo() {
       const response = await fetchUsers();
       setList(response);
     } catch (error) {
-      setIsError(true);
-      console.error(error.message);
+      setIsError(error.messsage);
     } finally {
       setIsLoading(false);
     }
@@ -37,37 +36,46 @@ export default function UserInfo() {
   if (isError) {
     return (
       <div className="h-60 flex-center w-full">
-        <p className="text-red-500">Failed to load user information.</p>
+        <ErrorState />
       </div>
     );
   }
 
   return (
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-      {Array.isArray(list) && list.length === 0 ? (
-        <div className="flex-center h-60 w-full">
-          <EmptyState />
-        </div>
-      ) : (
-        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-              <th scope="col" className="px-6 py-3">ID</th>
-              <th scope="col" className="px-6 py-3">Name</th>
-              <th scope="col" className="px-6 py-3">Email</th>
-              <th scope="col" className="px-6 py-3">Phone</th>
-              <th scope="col" className="px-6 py-3">Address</th>
-              <th scope="col" className="px-6 py-3">Role</th>
-              <th scope="col" className="px-6 py-3">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {list.map((user) => (
-              <UserBodytable key={user.id} user={user} />
+    <div>
+      <div className="relative overflow-x-auto">
+        {list?.length === 0 ? (
+          <div className="flex-center h-60 w-full">
+            <EmptyState />
+          </div>
+        ) : (
+          <div className="w-full text-sm text-gray-500">
+            <div className="flex text-xs text-gray-700 uppercase bg-gray-100 border-b">
+              <div className="flex-1 px-6 py-3">Name</div>
+              <div className="flex-1 px-6 py-3">Email</div>
+              <div className="flex-1 px-6 py-3">Phone</div>
+              <div className="w-1/6 px-6 py-3">Role</div>
+              <div className="w-1/6 px-6 py-3">Actions</div>
+            </div>
+            {list?.map((user) => (
+              <div key={user.id} className="flex items-center bg-white border-b hover:bg-gray-50">
+                <div className="flex-1 px-6 py-4">{user.name}</div>
+                <div className="flex-1 px-6 py-4">{user.email}</div>
+                <div className="flex-1 px-6 py-4">{user.phone}</div>
+                <div className="w-1/6 px-6 py-4">{user.role}</div>
+                <div className="w-1/6 px-6 py-4 flex gap-2">
+                  <button type="button">
+                    <EditIcon />
+                  </button>
+                  <button type="button">
+                    <DeleteIcon />
+                  </button>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
