@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { fetchUsers } from "../../../api/users";
 import Loader from "../../../components/ui/Loader";
 import EditIcon from "../../../assets/EditIcon";
@@ -54,22 +55,26 @@ export default function UserInfo() {
               <div className="flex-1 px-6 py-3">Name</div>
               <div className="flex-1 px-6 py-3">Email</div>
               <div className="flex-1 px-6 py-3">Phone</div>
-              <div className="w-1/6 px-6 py-3">Role</div>
-              <div className="w-1/6 px-6 py-3">Actions</div>
+              <div className="w-2/12 px-6 py-3">Role</div>
+              <div className="w-1/12 px-6 py-3">Actions</div>
             </div>
             {list?.map((user) => (
               <div key={user.id} className="flex items-center bg-white border-b hover:bg-gray-50">
-                <div className="flex-1 px-6 py-4">{user.name}</div>
+                <div className="flex-1 px-6 py-4">
+                  <Link to={`/users/${user.uuid}`} className="text-blue-500 hover:text-blue-700">
+                    {user.name}
+                  </Link>
+                </div>
                 <div className="flex-1 px-6 py-4">{user.email}</div>
                 <div className="flex-1 px-6 py-4">{user.phone}</div>
-                <div className="w-1/6 px-6 py-4">{user.role}</div>
-                <div className="w-1/6 px-6 py-4 flex gap-2">
+                <div className="w-2/12 px-6 py-4">{user.role}</div>
+                <div className="w-1/12 px-6 py-4 flex gap-2">
                   <button type="button">
                     <EditIcon />
                   </button>
-                  <button type="button">
+                  {/* <button type="button">
                     <DeleteIcon />
-                  </button>
+                  </button> */}
                 </div>
               </div>
             ))}

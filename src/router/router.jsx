@@ -11,6 +11,7 @@ import Members from "../pages/Members";
 import Company from "../pages/Company";
 import Profile from "../pages/Profile";
 import NotFound from "../pages/NotFound";
+import UserDetail from "../pages/users/UserDetail";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Overview /> },
       { path: "users", element: <Users /> },
+      { path: "users/:id", element: <UserDetail /> },
       { path: "products", element: <Products /> },
       { path: "calendar", element: <Calendar /> },
       { path: "documents", element: <Documents /> },
