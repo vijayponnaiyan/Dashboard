@@ -11,6 +11,7 @@ import Members from "../pages/Members";
 import Company from "../pages/Company";
 import Profile from "../pages/Profile";
 import NotFound from "../pages/NotFound";
+import UserDetail from "../pages/users/components/UserDetail.jsx";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,7 @@ const router = createBrowserRouter([
       { path: "company", element: <Company /> },
       { path: "profile", element: <Profile /> },
       { path: "settings", element: <Settings /> },
+      { path: "users/:id", element: <UserDetail /> }, // No leading slash here
     ],
   },
   { path: "*", element: <NotFound /> },
