@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 import Loader from "../../../components/ui/Loader";
 
 export default function UserDetail() {
@@ -8,35 +9,37 @@ export default function UserDetail() {
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
+
+
+  
+
+  const fetchUserDetail = async () => {
+    if (!id) {
+      console.error("User ID is missing!");
+      console.log("User ID:", id); // Debugging missing ID
+      setIsError(true);
+      setIsLoading(false);
+      return; // Early exit if ID is missing
+    }
+
+    try {
+      console.log("Fetching user details for ID:", id); // Debugging the ID
+
+      const response = await axios.get(`https://nodejs-x.vercel.app/api/users/${id}`);
+      console.log("User data:", response.data); // Debugging the data
+      setUser(response.data); // Set the user data
+    } catch (error) {
+      console.error("Failed to fetch user details:", error.message); // Debugging error
+      setIsError(true); // Set error state if there's an issue
+    } finally {
+      setIsLoading(false); // End loading state
+    }
+  };
+
+
+
   useEffect(() => {
-    const fetchUserDetail = async () => {
-      if (!id) {
-        console.error("User ID is missing!");
-        console.log("User ID:", id);
-          // Debugging missing ID
-        setIsError(true);
-        setIsLoading(false);
-        return; // Early exit if ID is missing
-      }
-
-      try {
-        console.log("Fetching user details for ID:", id);  // Debugging the ID
-        const response = await fetch(`https://nodejs-x.vercel.app/api/${id}`);
-        
-        if (!response.ok) {
-          throw new Error(`Failed to fetch user details: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log("User data:", data);  // Debugging the data
-        setUser(data); // Set the user data
-      } catch (error) {
-        console.error("Failed to fetch user details:", error);  // Debugging error
-        setIsError(true); // Set error state if there's an issue
-      } finally {
-        setIsLoading(false); // End loading state
-      }
-    };
+  
 
     fetchUserDetail();
   }, [id]);
