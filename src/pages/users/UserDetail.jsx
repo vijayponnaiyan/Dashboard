@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Loader from "../../components/ui/Loader"; // Ensure this is correct
-import {fetchUserById} from "../../api/users";
+import { fetchUserById } from "../../api/users";
 
 const UserDetail = () => {
   const { id } = useParams();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -13,7 +13,7 @@ const UserDetail = () => {
     try {
       const data = await fetchUserById(id); // Ensure this function works
       setUser(data);
-  
+
     } catch (err) {
       setError(err.message || "An error occurred.");
     } finally {
@@ -51,46 +51,70 @@ const UserDetail = () => {
   }
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-lg max-w-lg mx-auto">
-    {/* Header Section */}
-    <div className="flex items-center mb-6 border-b pb-4">
-      <div className="h-20 w-20 bg-gradient-to-r from-blue-500 to-blue-400 text-white rounded-full flex items-center justify-center text-3xl font-bold shadow">
-        {user.name.charAt(0).toUpperCase()}
+    <>
+      <div className="bg-white p-8 rounded-lg shadow-lg max-w-3xl mx-auto space-y-8">
+        {/* User Header Section */}
+        <div className="flex items-center space-x-6">
+          <div className="flex-shrink-0">
+            <img
+              className="h-32 w-32 rounded-full border-4 border-indigo-500"
+              src={`https://randomuser.me/api/portraits/men/1.jpg`}
+              alt="User profile"
+            />
+          </div>
+
+          <div>
+            <h2 className="text-3xl font-semibold text-gray-900">{user.name}</h2>
+            <p className="text-sm text-gray-500">{user.role}</p>
+            <p className="mt-2 text-sm text-gray-500">Joined: {user.joined}</p>
+            <div className="mt-4 flex space-x-6">
+              <a href={`mailto:${user.email}`} className="text-indigo-600 hover:text-indigo-800">
+              {user.email}
+              </a>
+              <a href={`tel:${user.phone}`} className="text-indigo-600 hover:text-indigo-800">
+              {user.phone}
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Bio Section */}
+        <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
+          <h3 className="text-lg font-semibold text-gray-900">Bio</h3>
+          <p className="mt-2 text-gray-600">{user.bio}</p>
+        </div>
+
+        {/* Recent Activity Section */}
+        <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
+          <h3 className="text-lg font-semibold text-gray-900">Recent Activity</h3>
+          <ul className="mt-2 space-y-4">
+            <li className="flex items-center space-x-2 text-gray-600">
+              <span className="text-gray-400">📝</span>
+              <span className="text-gray-900">Updated profile picture</span>
+              <span className="text-sm text-gray-500">2 hours ago</span>
+            </li>
+            <li className="flex items-center space-x-2 text-gray-600">
+              <span className="text-gray-400">📚</span>
+              <span className="text-gray-900">Completed React Course</span>
+              <span className="text-sm text-gray-500">3 days ago</span>
+            </li>
+            <li className="flex items-center space-x-2 text-gray-600">
+              <span className="text-gray-400">💬</span>
+              <span className="text-gray-900">Commented on "Tailwind CSS Tips"</span>
+              <span className="text-sm text-gray-500">1 week ago</span>
+            </li>
+          </ul>
+        </div>
+
+        {/* Action Buttons Section */}
+        <div className="flex space-x-4">
+          <button className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+            Edit Profile
+          </button>
+        </div>
       </div>
-      <div className="ml-4">
-        <h1 className="text-2xl font-bold text-gray-800">{user.name}</h1>
-        <p className="text-sm text-gray-500">{user.role}</p>
-      </div>
-    </div>
-  
-    {/* Details Section */}
-    <div className="space-y-6">
-      <div className="flex items-center">
-        <span className="w-20 text-sm text-gray-500 font-medium">Email:</span>
-        <span className="text-gray-800">{user.email}</span>
-      </div>
-      <div className="flex items-center">
-        <span className="w-20 text-sm text-gray-500 font-medium">Phone:</span>
-        <span className="text-gray-800">{user.phone}</span>
-      </div>
-      <div className="flex items-center">
-        <span className="w-20 text-sm text-gray-500 font-medium">Role:</span>
-        <span className="text-gray-800">{user.role}</span>
-      </div>
-    </div>
-  
-    {/* Action Section */}
-    <div className="mt-6 flex justify-end space-x-3">
-      <button className="px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-md shadow hover:bg-blue-600 transition">
-        Edit Profile
-      </button>
-      <button className="px-4 py-2 bg-red-500 text-white text-sm font-semibold rounded-md shadow hover:bg-red-600 transition">
-        Delete
-      </button>
-    </div>
-  </div>
-  
-  
+
+    </>
   );
 };
 
