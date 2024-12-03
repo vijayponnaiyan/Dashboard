@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Loader from "../../components/ui/Loader"; // Ensure this is correct
-import {fetchUserById} from "../../api/userone";
+import {fetchUserById} from "../../api/users";
 
 const UserDetail = () => {
   const { id } = useParams();
@@ -13,6 +13,7 @@ const UserDetail = () => {
     try {
       const data = await fetchUserById(id); // Ensure this function works
       setUser(data);
+  
     } catch (err) {
       setError(err.message || "An error occurred.");
     } finally {
@@ -22,6 +23,7 @@ const UserDetail = () => {
 
   useEffect(() => {
     fetchUser();
+
   }, [id]);
 
   if (loading) {
