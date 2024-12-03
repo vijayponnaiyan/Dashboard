@@ -8,3 +8,13 @@ export const fetchUsers = async () => {
     throw error;
   }
 };
+
+
+export  const fetchUserById = async (id) => {
+    try {
+      const data = await baseAPI.get(`/users/${id}`);
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }

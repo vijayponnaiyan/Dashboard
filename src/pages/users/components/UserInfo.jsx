@@ -37,7 +37,7 @@ export default function UserInfo() {
   if (isError) {
     return (
       <div className="h-60 flex-center w-full">
-        <ErrorState />
+        <ErrorState message={isError} />
       </div>
     );
   }
