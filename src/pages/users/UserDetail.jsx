@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { fetchUserById } from "../../api/userone";
-import {Loader} from "../../components/ui/Loader";
-
-
+import { useState, useEffect } from "react";
+import Loader from "../../components/ui/Loader"; // Ensure this is correct
+import {fetchUserById} from "../../api/userone";
 
 const UserDetail = () => {
   const { id } = useParams();
@@ -11,30 +9,25 @@ const UserDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-
   const fetchUser = async () => {
     try {
-      const data = await fetchUserById(id);
+      const data = await fetchUserById(id); // Ensure this function works
       setUser(data);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "An error occurred.");
     } finally {
       setLoading(false);
     }
   };
 
-
   useEffect(() => {
-  
     fetchUser();
   }, [id]);
-
- 
 
   if (loading) {
     return (
       <div className="h-60 flex-center">
-        <Loader />
+        <Loader /> {/* Ensure Loader is imported */}
       </div>
     );
   }
@@ -42,58 +35,59 @@ const UserDetail = () => {
   if (error) {
     return (
       <div className="h-60 flex-center w-full">
-        <ErrorState />
+        <p className="text-red-500">Error: {error}</p>
       </div>
     );
   }
 
-  if (!user) return <div>No user found</div>;
+  if (!user) {
+    return (
+      <div className="h-60 flex-center">
+        <p>No user found</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow-lg max-w-3xl mx-auto space-y-6">
-    <div className="flex flex-col items-center">
-      <div className="w-24 h-24 bg-blue-100 text-blue-500 rounded-full flex items-center justify-center text-3xl font-bold">
-        {user.name.charAt(0)}
+    <div className="p-6 bg-white rounded-lg shadow-lg max-w-lg mx-auto">
+    {/* Header Section */}
+    <div className="flex items-center mb-6 border-b pb-4">
+      <div className="h-20 w-20 bg-gradient-to-r from-blue-500 to-blue-400 text-white rounded-full flex items-center justify-center text-3xl font-bold shadow">
+        {user.name.charAt(0).toUpperCase()}
       </div>
-      <h1 className="text-3xl font-bold text-gray-800 mt-4">{user.name}</h1>
-      <p className="text-gray-500">{user.email}</p>
-      <p className="text-gray-500">{user.phone}</p>
+      <div className="ml-4">
+        <h1 className="text-2xl font-bold text-gray-800">{user.name}</h1>
+        <p className="text-sm text-gray-500">{user.role}</p>
+      </div>
     </div>
   
-    <hr className="border-gray-300" />
-  
-    {user.hobbies && (
-      <div>
-        <h2 className="text-2xl font-semibold text-gray-800 mb-3">Hobbies</h2>
-        <div className="flex flex-wrap gap-2">
-          {user.hobbies.map((hobby, index) => (
-            <span
-              key={index}
-              className="px-4 py-2 bg-blue-100 text-blue-600 text-sm rounded-full"
-            >
-              {hobby}
-            </span>
-          ))}
-        </div>
+    {/* Details Section */}
+    <div className="space-y-6">
+      <div className="flex items-center">
+        <span className="w-20 text-sm text-gray-500 font-medium">Email:</span>
+        <span className="text-gray-800">{user.email}</span>
       </div>
-    )}
-  
-    {user.skills && (
-      <div>
-        <h2 className="text-2xl font-semibold text-gray-800 mb-3">Skills</h2>
-        <div className="flex flex-wrap gap-2">
-          {user.skills.map((skill, index) => (
-            <span
-              key={index}
-              className="px-4 py-2 bg-green-100 text-green-600 text-sm rounded-full"
-            >
-              {skill}
-            </span>
-          ))}
-        </div>
+      <div className="flex items-center">
+        <span className="w-20 text-sm text-gray-500 font-medium">Phone:</span>
+        <span className="text-gray-800">{user.phone}</span>
       </div>
-    )}
+      <div className="flex items-center">
+        <span className="w-20 text-sm text-gray-500 font-medium">Role:</span>
+        <span className="text-gray-800">{user.role}</span>
+      </div>
+    </div>
+  
+    {/* Action Section */}
+    <div className="mt-6 flex justify-end space-x-3">
+      <button className="px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-md shadow hover:bg-blue-600 transition">
+        Edit Profile
+      </button>
+      <button className="px-4 py-2 bg-red-500 text-white text-sm font-semibold rounded-md shadow hover:bg-red-600 transition">
+        Delete
+      </button>
+    </div>
   </div>
+  
   
   );
 };
