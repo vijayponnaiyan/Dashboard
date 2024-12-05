@@ -59,7 +59,7 @@ export default function UserInfo() {
               <div className="w-1/12 px-6 py-3">Actions</div>
             </div>
             {list?.map((user) => (
-              <div key={user.id} className="flex items-center bg-white border-b hover:bg-gray-50">
+              <div key={user.uuid} className="flex items-center bg-white border-b hover:bg-gray-50">
                 <div className="flex-1 px-6 py-4">
                   <Link to={`/users/${user.uuid}`} className="text-blue-500 hover:text-blue-700">
                     {user.name}
