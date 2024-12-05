@@ -90,23 +90,27 @@ export default function Modal({ toggleModal }) {
                   />
                 </div>
                 {/* Remember Checkbox */}
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="remember"
-                    className="w-4 h-4 text-blue-600 bg-gray-50 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label htmlFor="remember" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                    Remember me
-                  </label>
+                <div className="flex shrink-0 justify-end px-4 py-4">
+                  {onClose && (
+                    <button
+                      type="button"
+                      onClick={onClose}
+                      className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:ring-gray-400"
+                    >
+                      {cancelLabel}
+                    </button>
+                  )}
+                  {onSubmit && (
+                    <button
+                      type="button"
+                      onClick={onSubmit}
+                      className="ml-4 inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                    >
+                      {saveLabel}
+                    </button>
+                  )}
                 </div>
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-700 dark:hover:bg-blue-800 dark:focus:ring-blue-900"
-                >
-                  Add Your Account
-                </button>
+
               </form>
             </div>
           </div>

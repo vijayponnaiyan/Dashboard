@@ -85,16 +85,40 @@ export default function Users() {
           </div>
           {/* Role Field */}
           <div>
-            <label htmlFor="role" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label
+              htmlFor="role"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               Role
             </label>
-            <input
-              type="text"
+            <select
               id="role"
-              placeholder="Enter role"
-              className="block w-full px-4 py-2 mt-1 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-            />
+              className="block w-full px-4 py-2 mt-1 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            >
+              <option value="admin">--Select-Role--</option>
+              <option value="admin">Admin</option>
+              <option value="user">User</option>
+            </select>
           </div>
+
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="remember"
+              className="w-4 h-4 text-blue-600 bg-gray-50 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
+            />
+            <label htmlFor="remember" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+              Remember me
+            </label>
+          </div>
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-700 dark:hover:bg-blue-800 dark:focus:ring-blue-900"
+          >
+            Add Your Account
+          </button>
+
         </form>
       </DrawerWrapper>
     </div>
