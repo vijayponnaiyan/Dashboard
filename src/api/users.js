@@ -5,7 +5,7 @@ export const fetchUsers = async () => {
     const data = await baseAPI.get("/users");
     return data;
   } catch (error) {
-    throw error;
+    throw new Error(error);
   }
 };
 
@@ -14,17 +14,15 @@ export const fetchUserById = async (id) => {
     const data = await baseAPI.get(`/users/${id}`);
     return data;
   } catch (error) {
-    throw error;
+    throw new Error(error);
   }
 };
 
 export const createUser = async (userData) => {
-  console.log(userData);
   try {
     const response = await baseAPI.post("/users", userData);
-    return response.data; // Adjust based on your API's response structure
+    return response.data;
   } catch (error) {
-    console.error("Error creating user:", error.response?.data || error.message);
     throw new Error(error);
   }
 };

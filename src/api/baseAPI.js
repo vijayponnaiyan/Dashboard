@@ -10,7 +10,6 @@ const baseAPI = axios.create({
 });
 
 // errorHandler.js
-
 export function handleError(error) {
   console.log(error);
   throw error;
