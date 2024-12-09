@@ -18,3 +18,18 @@ export  const fetchUserById = async (id) => {
       throw error;
     }
   }
+
+  export  const createUser = async (userData) => {
+    try {
+      const response = await baseAPI.post("/users", userData);
+      return response.data; // Adjust based on your API's response structure
+    } catch (error) {
+      console.error("Error creating user:", error.response?.data || error.message);
+      throw new Error(
+        error.response?.data?.message || "An error occurred while creating the user"
+      );
+    }
+  };
+
+  
+  
