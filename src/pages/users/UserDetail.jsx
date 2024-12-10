@@ -2,6 +2,8 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Loader from "../../components/ui/Loader"; // Ensure this is correct
 import { fetchUserById } from "../../api/users";
+import ErrorState from "../../components/ui/ErrorState";
+import EmptyState from "../../components/ui/EmptyState";
 
 const UserDetail = () => {
   const { id } = useParams();
@@ -13,7 +15,6 @@ const UserDetail = () => {
     try {
       const data = await fetchUserById(id); // Ensure this function works
       setUser(data);
-
     } catch (err) {
       setError(err.message || "An error occurred.");
     } finally {
@@ -23,8 +24,7 @@ const UserDetail = () => {
 
   useEffect(() => {
     fetchUser();
-
-  }, [id]);
+  }, []);
 
   if (loading) {
     return (
@@ -37,7 +37,7 @@ const UserDetail = () => {
   if (error) {
     return (
       <div className="h-60 flex-center w-full">
-        <p className="text-red-500">Error: {error}</p>
+        <ErrorState />
       </div>
     );
   }
@@ -45,7 +45,7 @@ const UserDetail = () => {
   if (!user) {
     return (
       <div className="h-60 flex-center">
-        <p>No user found</p>
+        <EmptyState />
       </div>
     );
   }
@@ -56,23 +56,19 @@ const UserDetail = () => {
         {/* User Header Section */}
         <div className="flex items-center space-x-6">
           <div className="flex-shrink-0">
-            <img
-              className="h-32 w-32 rounded-full border-4 border-indigo-500"
-              src={`https://randomuser.me/api/portraits/men/1.jpg`}
-              alt="User profile"
-            />
+            <img className="h-32 w-32 rounded-full border-4 border-indigo-500" src={user.image} alt="User profile" />
           </div>
 
           <div>
             <h2 className="text-3xl font-semibold text-gray-900">{user.name}</h2>
-            <p className="text-sm text-gray-500">{user.role}</p>
-            <p className="mt-2 text-sm text-gray-500">Joined: {user.joined}</p>
+            <p className="text-sm text-gray-500">Role: {user.role}</p>
+            <p className="mt-2 text-sm text-gray-500">Joined: {new Date(user.createdAt).toLocaleDateString()}</p>
             <div className="mt-4 flex space-x-6">
               <a href={`mailto:${user.email}`} className="text-indigo-600 hover:text-indigo-800">
-              {user.email}
+                {user.email}
               </a>
               <a href={`tel:${user.phone}`} className="text-indigo-600 hover:text-indigo-800">
-              {user.phone}
+                {user.phone}
               </a>
             </div>
           </div>
@@ -113,7 +109,6 @@ const UserDetail = () => {
           </button>
         </div>
       </div>
-
     </>
   );
 };
