@@ -65,7 +65,51 @@ export default function Users() {
         </button>
       </div>
 
-      <DrawerWrapper isOpen={isOpen} onClose={() => setIsOpen(false)} title="Add User">
+      {isLoading ? (
+        <p className="text-blue-500 font-medium">Loading...</p>
+      ) : error ? (
+        <p className="text-red-500 font-medium">Error: {error}</p>
+      ) : successMessage ? (
+        <p className="text-green-500 font-medium">{successMessage}</p>
+      ) : (
+        <div className="overflow-x-auto">
+          {list.length > 0 ? (
+            <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
+              <thead>
+                <tr className="bg-gray-100 border-b">
+                  <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700">Name</th>
+                  <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700">Email</th>
+                  <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700">Phone</th>
+                  <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700">Address</th>
+                  <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700">Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                {list.map((user, index) => (
+                  <tr
+                    key={user?.uuid}
+                    className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-gray-100 transition`}
+                  >
+                    <td className="py-3 px-6 text-sm text-gray-800">
+                      <Link to={`/users/${user?.uuid}`} className="text-blue-500 hover:text-blue-700">
+                        {user.name}
+                      </Link>
+                    </td>
+                    <td className="py-3 px-6 text-sm text-gray-800">{user.email}</td>
+                    <td className="py-3 px-6 text-sm text-gray-800">{user.phone}</td>
+                    <td className="py-3 px-6 text-sm text-gray-800">{user.address}</td>
+                    <td className="py-3 px-6 text-sm text-gray-800 capitalize">{user.role}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p className="text-gray-500 text-center">No users found.</p>
+          )}
+        </div>
+      )}
+
+      <DrawerWrapper isOpen={isOpen} onClose={() => setIsOpen(false)} title="Add User" >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">
@@ -164,50 +208,6 @@ export default function Users() {
           </button>
         </form>
       </DrawerWrapper>
-
-      {isLoading ? (
-        <p className="text-blue-500 font-medium">Loading...</p>
-      ) : error ? (
-        <p className="text-red-500 font-medium">Error: {error}</p>
-      ) : successMessage ? (
-        <p className="text-green-500 font-medium">{successMessage}</p>
-      ) : (
-        <div className="overflow-x-auto">
-          {list.length > 0 ? (
-            <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
-              <thead>
-                <tr className="bg-gray-100 border-b">
-                  <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700">Name</th>
-                  <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700">Email</th>
-                  <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700">Phone</th>
-                  <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700">Address</th>
-                  <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700">Role</th>
-                </tr>
-              </thead>
-              <tbody>
-                {list.map((user, index) => (
-                  <tr
-                    key={user.id}
-                    className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-gray-100 transition`}
-                  >
-                    <td className="py-3 px-6 text-sm text-gray-800">
-                      <Link to={`/users/${user.uuid}`} className="text-blue-500 hover:text-blue-700">
-                        {user.name}
-                      </Link>
-                    </td>
-                    <td className="py-3 px-6 text-sm text-gray-800">{user.email}</td>
-                    <td className="py-3 px-6 text-sm text-gray-800">{user.phone}</td>
-                    <td className="py-3 px-6 text-sm text-gray-800">{user.address}</td>
-                    <td className="py-3 px-6 text-sm text-gray-800 capitalize">{user.role}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p className="text-gray-500 text-center">No users found.</p>
-          )}
-        </div>
-      )}
     </div>
   );
 }
