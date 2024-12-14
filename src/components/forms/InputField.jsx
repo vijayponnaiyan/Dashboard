@@ -1,6 +1,6 @@
 import React from "react";
 
-const EmailField = ({ label, id, register, validation, errors }) => {
+const InputField = ({ label, id, register, validation, errors }) => {
   return (
     <div>
       <label htmlFor={id} className="block text-sm font-medium text-gray-700">
@@ -18,4 +18,4 @@ const EmailField = ({ label, id, register, validation, errors }) => {
   );
 };
 
-export default EmailField;
+export default InputField;

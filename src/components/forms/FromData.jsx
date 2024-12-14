@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from "react-hook-form";
 import { createUser as createUserAPI } from "../../api/users";
-import NameField from '../forms/NameField';
-import EmailField from "../forms/EmailField";
-import PhoneField from "../forms/PhoneField";
-import AddressField from "../forms/AddressField";
+import InputField from '../forms/InputField';
 import SelectField from "../forms/SelectField";
 
 export default function FromData() {
@@ -39,7 +36,7 @@ export default function FromData() {
       <div>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            < NameField
+            < InputField
               label="Name"
               id="name"
               register={register}
@@ -48,7 +45,7 @@ export default function FromData() {
             />
           </div>
           <div>
-            <EmailField
+            <InputField
               label="Email"
               id="email"
               register={register}
@@ -63,7 +60,7 @@ export default function FromData() {
             />
           </div>
           <div>
-            <PhoneField
+            <InputField
               label="Phone"
               id="phone"
               register={register}
@@ -78,7 +75,7 @@ export default function FromData() {
             />
           </div>
           <div>
-            < AddressField
+            < InputField
               label="Address"
               id="address"
               register={register}

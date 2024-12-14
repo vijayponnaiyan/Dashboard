@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { fetchUsers } from "../../api/users";
+import { fetchUsers, deleteUser } from "../../api/users";
 import DrawerWrapper from "../../components/modal/DrawerWrapper";
 import { Link } from "react-router-dom";
 import FromData from "../../components/forms/FromData";
-import EditIcon from "../../assets/EditIcon";
 import DeleteIcon from "../../assets/DeleteIcon";
-import Loader from "../../components/ui/Loader"
-import ErrorStat from "../../components/ui/ErrorState"
+import Loader from "../../components/ui/Loader";
+import ErrorStat from "../../components/ui/ErrorState";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -20,7 +19,14 @@ class ErrorBoundary extends React.Component {
 
   render() {
     if (this.state.error) {
-      return <p className="text-red-500 font-medium">Error: {this.state.error.message}</p>;
+      return (
+        <div>
+          <p className="text-red-500 font-medium">Error: {this.state.error.message}</p>
+          <button onClick={() => window.location.reload()} className="text-blue-500 underline">
+            Retry
+          </button>
+        </div>
+      );
     }
     return this.props.children;
   }
@@ -32,6 +38,7 @@ export default function Users() {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchUsersList = async () => {
     setIsLoading(true);
@@ -49,6 +56,23 @@ export default function Users() {
     fetchUsersList();
   }, []);
 
+  const handleDelete = async (uuid) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      setDeleting(true);
+      try {
+        await deleteUser(uuid); // Call the delete API with uuid
+        alert("User deleted successfully.");
+        setList(list.filter((user) => user.uuid !== uuid)); // Remove deleted user from state
+      } catch (error) {
+        console.error("Error deleting user:", error.message);
+        alert("Failed to delete the user. Please try again later.");
+      } finally {
+        setDeleting(false);
+      }
+    }
+  };
+
+
   return (
     <ErrorBoundary>
       <div className="p-4 space-y-6">
@@ -63,9 +87,11 @@ export default function Users() {
         </div>
 
         {isLoading ? (
-          <div className="text-blue-500 font-medium"><Loader/></div>
+          <div className="text-blue-500 font-medium">
+            <Loader />
+          </div>
         ) : error ? (
-          <p className="text-red-500 font-medium">< ErrorStat/></p>
+          <ErrorStat message={error} />
         ) : successMessage ? (
           <p className="text-green-500 font-medium">{successMessage}</p>
         ) : (
@@ -79,14 +105,13 @@ export default function Users() {
                     <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700">Phone</th>
                     <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700">Address</th>
                     <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700">Role</th>
-                    <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700">Edit</th>
                     <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700">Delete</th>
                   </tr>
                 </thead>
                 <tbody>
                   {list.map((user, index) => (
                     <tr
-                      key={user?.uuid || index} // Use index as a fallback key if uuid is undefined
+                      key={user?.uuid || index}
                       className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-gray-100 transition`}
                     >
                       <td className="py-3 px-6 text-sm text-gray-800">
@@ -98,17 +123,16 @@ export default function Users() {
                       <td className="py-3 px-6 text-sm text-gray-800">{user.phone}</td>
                       <td className="py-3 px-6 text-sm text-gray-800">{user.address}</td>
                       <td className="py-3 px-6 text-sm text-gray-800 capitalize">{user.role}</td>
-                      <td className="py-3 px-6 text-sm text-gray-800 capitalize">
-                        <button type="button">
-                          <EditIcon />
-                        </button>
-                      </td>
-                      <td className="py-3 px-6 text-sm text-gray-800 capitalize">
-                        <button type="button">
+                      <td className="py-3 px-6 text-sm text-gray-800">
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(user.uuid)}
+                          disabled={deleting}
+                          className="text-red-500 hover:text-red-700"
+                        >
                           <DeleteIcon />
                         </button>
                       </td>
-
                     </tr>
                   ))}
                 </tbody>
