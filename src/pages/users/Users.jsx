@@ -1,126 +1,159 @@
-import React from "react";
-import { useState } from "react";
-import UserInfo from "./components/UserInfo";
-// import Modal from "../../components/ui/Modal";
+import React, { useState, useEffect } from "react";
+import { fetchUsers, deleteUser } from "../../api/users";
 import DrawerWrapper from "../../components/modal/DrawerWrapper";
+import { Link } from "react-router-dom";
+import FromData from "../../components/forms/FromData";
+import DeleteIcon from "../../assets/DeleteIcon";
+import Loader from "../../components/ui/Loader";
+import ErrorStat from "../../components/ui/ErrorState";
+
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { error };
+  }
+
+  render() {
+    if (this.state.error) {
+      return (
+        <div>
+          <p className="text-red-500 font-medium">Error: {this.state.error.message}</p>
+          <button onClick={() => window.location.reload()} className="text-blue-500 underline">
+            Retry
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 export default function Users() {
-  // const [isModalOpen, SetIsModalOpen] = useState(false);
-  const [isOPen, setIsOpen] = useState(false);
+  const [list, setList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
-  // const toggleModal = () => {
-  //   SetIsModalOpen((prev) => !prev);
-  // };
+  const fetchUsersList = async () => {
+    setIsLoading(true);
+    try {
+      const users = await fetchUsers();
+      setList(users);
+    } catch (error) {
+      setError(error.message || "Failed to fetch users");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsersList();
+  }, []);
+
+  const handleDelete = async (uuid) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      setDeleting(true);
+      try {
+        await deleteUser(uuid); // Call the delete API with uuid
+        alert("User deleted successfully.");
+        setList(list.filter((user) => user.uuid !== uuid)); // Remove deleted user from state
+      } catch (error) {
+        console.error("Error deleting user:", error.message);
+        alert("Failed to delete the user. Please try again later.");
+      } finally {
+        setDeleting(false);
+      }
+    }
+  };
+
 
   return (
-    <div className="p-4">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
-        {/* Heading Section */}
-        <div className="mb-4 md:mb-0">
-          <h2 className="text-xl md:text-3xl font-semibold">Users</h2>
-          <p className="mt-2 text-sm md:text-base">Manage your User and their account permissions here.</p>
-        </div>
-
-        {/* Button Section */}
-        <div className="flex justify-center md:justify-end w-full md:w-auto">
+    <ErrorBoundary>
+      <div className="p-4 space-y-6">
+        <div className="flex flex-col md:flex-row justify-between items-center">
+          <h2 className="text-xl md:text-3xl font-bold">Users</h2>
           <button
-            type="button"
             onClick={() => setIsOpen(true)}
-            className="text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 inline-flex items-center dark:focus:ring-gray-800 dark:bg-white dark:border-gray-700 dark:text-gray-900 dark:hover:bg-gray-200"
+            className="text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5"
           >
             + Add User
           </button>
         </div>
+
+        {isLoading ? (
+          <div className="text-blue-500 font-medium">
+            <Loader />
+          </div>
+        ) : error ? (
+          <ErrorStat message={error} />
+        ) : successMessage ? (
+          <p className="text-green-500 font-medium">{successMessage}</p>
+        ) : (
+          <div className="overflow-x-auto">
+            {list.length > 0 ? (
+              <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
+                <thead>
+                  <tr className="bg-gray-100 border-b">
+                    <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700">Name</th>
+                    <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700">Email</th>
+                    <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700">Phone</th>
+                    <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700">Address</th>
+                    <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700">Role</th>
+                    <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700">Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {list.map((user, index) => (
+                    <tr
+                      key={user?.uuid || index}
+                      className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-gray-100 transition`}
+                    >
+                      <td className="py-3 px-6 text-sm text-gray-800">
+                        <Link to={`/users/${user?.uuid}`} className="text-blue-500 hover:text-blue-700">
+                          {user.name}
+                        </Link>
+                      </td>
+                      <td className="py-3 px-6 text-sm text-gray-800">{user.email}</td>
+                      <td className="py-3 px-6 text-sm text-gray-800">{user.phone}</td>
+                      <td className="py-3 px-6 text-sm text-gray-800">{user.address}</td>
+                      <td className="py-3 px-6 text-sm text-gray-800 capitalize">{user.role}</td>
+                      <td className="py-3 px-6 text-sm text-gray-800">
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(user.uuid)}
+                          disabled={deleting}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <DeleteIcon />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="text-gray-500 text-center">No users found.</p>
+            )}
+          </div>
+        )}
+
+        <DrawerWrapper isOpen={isOpen} onClose={() => setIsOpen(false)} title="Add User">
+          <FromData
+            onSuccess={(message) => {
+              setSuccessMessage(message);
+              setIsOpen(false);
+              fetchUsersList(); // Refresh user list after adding a user
+            }}
+            onError={(message) => setError(message)}
+          />
+        </DrawerWrapper>
       </div>
-
-      {/* Divider */}
-      <div className="p-3">
-        <hr />
-      </div>
-      {/* User Information */}
-      <UserInfo />
-      {/* <>{isModalOpen && <Modal toggleModal={toggleModal} />}</> */}
-      <DrawerWrapper
-        isOpen={isOPen}
-        onClose={() => setIsOpen(false)}
-        title="Add User"
-        onSubmit={() => console.log("hi")}
-      >
-        <form className="space-y-4">
-          {/* Name Field */}
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Your Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              placeholder="Enter your name"
-              className="block w-full px-4 py-2 mt-1 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-            />
-          </div>
-          {/* Email Field */}
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              placeholder="name@company.com"
-              className="block w-full px-4 py-2 mt-1 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-            />
-          </div>
-          {/* Phone Field */}
-          <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Phone
-            </label>
-            <input
-              type="number"
-              id="phone"
-              placeholder="+91 7855432259"
-              className="block w-full px-4 py-2 mt-1 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-            />
-          </div>
-          {/* Role Field */}
-          <div>
-            <label
-              htmlFor="role"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Role
-            </label>
-            <select
-              id="role"
-              className="block w-full px-4 py-2 mt-1 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            >
-              <option value="admin">--Select-Role--</option>
-              <option value="admin">Admin</option>
-              <option value="user">User</option>
-            </select>
-          </div>
-
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="remember"
-              className="w-4 h-4 text-blue-600 bg-gray-50 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
-            />
-            <label htmlFor="remember" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-              Remember me
-            </label>
-          </div>
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-700 dark:hover:bg-blue-800 dark:focus:ring-blue-900"
-          >
-            Add Your Account
-          </button>
-
-        </form>
-      </DrawerWrapper>
-    </div>
+    </ErrorBoundary>
   );
 }

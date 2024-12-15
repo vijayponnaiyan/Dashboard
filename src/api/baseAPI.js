@@ -9,42 +9,21 @@ const baseAPI = axios.create({
   },
 });
 
-// Error Handler Function
-const handleError = (error) => {
-  if (error.response) {
-    // HTTP error responses
-    const { status, data } = error.response;
-    console.error(`Error ${status}:`, data.message || data);
-
-    switch (status) {
-      case 400:
-        console.error("Bad Request - Check your input");
-        break;
-      case 404:
-        console.error("Not Found - Check the endpoint");
-        break;
-      case 500:
-        console.error("Internal Server Error - Try again later");
-        break;
-      default:
-        console.error("Unhandled HTTP error:", status);
-    }
-  } else if (error.request) {
-    // No response received from the server
-    console.error("No response received from the server. Check your network connection.");
-  } else {
-    // Other errors (e.g., setup issues)
-    console.error("Error setting up the request:", error.message);
-  }
-
-  // Optionally, return a specific error structure
-  return Promise.reject(error);
-};
+// errorHandler.js
+export function handleError(error) {
+  console.log(error);
+  throw error;
+}
 
 // Add a request interceptor
 baseAPI.interceptors.request.use(
   (config) => {
-    // Add any common configuration modifications if necessary
+    console.log("Request:", {
+      method: config.method,
+      url: config.url,
+      headers: config.headers,
+      data: config.data,
+    });
     return config;
   },
   (error) => {
@@ -56,7 +35,12 @@ baseAPI.interceptors.request.use(
 // Add a response interceptor
 baseAPI.interceptors.response.use(
   (response) => {
-    // Handle responses (e.g., extract data)
+    console.log("Response:", {
+      status: response.status,
+      statusText: response.statusText,
+      data: response.data,
+      headers: response.headers,
+    });
     return response.data;
   },
   (error) => {
